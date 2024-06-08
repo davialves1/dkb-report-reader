@@ -5,13 +5,12 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +25,10 @@ public class UploadController {
 
     private static final String FILEPATH_STRING = System.getProperty("java.io.tmpdir");
 
+    private static final List<String> columns = List.of("Buchungsdatum", "Wertstellung", "Status",
+            "Zahlungspflichtige*r", "Zahlungsempfänger*in", "Verwendungszweck", "Umsatztyp", "IBAN", "Betrag (€)",
+            "Gläubiger-ID", "Mandatsreferenz", "Kundenreferenz");
+
     @GetMapping("/")
     public String hello() {
         return "Hello World";
@@ -35,6 +38,10 @@ public class UploadController {
     public ResponseEntity<FileResponseDto> upload(@RequestParam MultipartFile file) throws Exception {
         String fileName = file.getOriginalFilename();
         FileResponseDto fileResponseDto = new FileResponseDto(fileName);
+        if (fileName != null && !fileName.contains(".csv")) {
+            return new ResponseEntity<>(fileResponseDto, HttpStatus.BAD_REQUEST);
+        }
+
         Path filePath = saveFileToTempFolder(file);
 
         try (Reader reader = Files.newBufferedReader(filePath);
@@ -49,7 +56,13 @@ public class UploadController {
                         .build())) {
 
             for (CSVRecord record : csvParser) {
-                System.out.println(record.get(0));
+                System.out.println("----------------------------");
+                List<String> rowList = record.toList();
+                int index = 0;
+                for (String cell : rowList) {
+                    System.out.println(columns.get(index) + ": " + cell);
+                    index++;
+                }
             }
 
         } catch (IOException e) {
