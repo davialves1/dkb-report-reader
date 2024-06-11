@@ -7,6 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -24,9 +27,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bank_statement_reader.dkb.dto.FileResponseDto;
 import com.bank_statement_reader.dkb.dto.TransactionDto;
+import com.bank_statement_reader.dkb.enums.CategoryEnum;
+import com.bank_statement_reader.dkb.service.CategoryMatcherService;
+
+import lombok.AllArgsConstructor;
 
 @RestController
+@AllArgsConstructor
 public class UploadController {
+
+    private CategoryMatcherService categoryMatcherService;
 
     private static final String FILEPATH_STRING = System.getProperty("java.io.tmpdir");
 
@@ -71,9 +81,15 @@ public class UploadController {
                         .build())) {
 
             List<TransactionDto> transactionDtos = new ArrayList<>();
+            int index = 0;
             for (CSVRecord record : csvParser) {
-                transactionDtos.add(createTransactionDto(record.toList()));
+                if (index > 6) {
+                    transactionDtos.add(createTransactionDto(record.toList()));
+                }
+                index++;
             }
+            transactionDtos.removeIf(t -> t.getAmount() == null);
+
             fileResponseDto.setTransactions(transactionDtos);
 
         } catch (IOException e) {
@@ -103,6 +119,7 @@ public class UploadController {
 
     private TransactionDto createTransactionDto(List<String> row) throws ParseException {
         NumberFormat format = NumberFormat.getInstance(Locale.GERMANY);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
         TransactionDto transactionDto = new TransactionDto();
         int index = 0;
         for (String cell : row) {
@@ -112,6 +129,10 @@ public class UploadController {
             switch (index) {
                 case 0:
                     transactionDto.setBookingDate(cell);
+                    LocalDate localDate = LocalDate.parse(cell, formatter);
+                    transactionDto.setDay(localDate.getDayOfMonth());
+                    transactionDto.setMonth(localDate.getMonthValue());
+                    transactionDto.setYear(localDate.getYear());
                     break;
                 case 1:
                     transactionDto.setValueDate(cell);
@@ -123,7 +144,9 @@ public class UploadController {
                     transactionDto.setPayer(cell);
                     break;
                 case 4:
-                    transactionDto.setPayee(cell);
+                    String category = categoryMatcherService.getCategory(cell);
+                    transactionDto.setCategory(category);
+                    transactionDto.setDescription(cell);
                     break;
                 case 5:
                     transactionDto.setPurpose(cell);

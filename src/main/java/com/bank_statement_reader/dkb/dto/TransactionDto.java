@@ -1,5 +1,9 @@
 package com.bank_statement_reader.dkb.dto;
 
+import java.time.Month;
+
+import com.bank_statement_reader.dkb.enums.CategoryEnum;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +17,7 @@ public class TransactionDto {
     private String valueDate;
     private String status;
     private String payer;
-    private String payee;
+    private String description;
     private String purpose;
     private String type;
     private String iban;
@@ -21,4 +25,9 @@ public class TransactionDto {
     private String creditorId;
     private String mandateReference;
     private String customerReference;
+    private int day;
+    private int month;
+    private int year;
+    private String category;
+
 }
