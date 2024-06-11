@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bank_statement_reader.dkb.dto.FileResponseDto;
 import com.bank_statement_reader.dkb.dto.TransactionDto;
-import com.bank_statement_reader.dkb.enums.CategoryEnum;
 import com.bank_statement_reader.dkb.service.CategoryMatcherService;
 
 import lombok.AllArgsConstructor;

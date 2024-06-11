@@ -1,9 +1,5 @@
 package com.bank_statement_reader.dkb.dto;
 
-import java.time.Month;
-
-import com.bank_statement_reader.dkb.enums.CategoryEnum;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
