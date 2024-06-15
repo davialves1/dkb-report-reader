@@ -26,7 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bank_statement_reader.dkb.dto.FileResponseDto;
 import com.bank_statement_reader.dkb.dto.TransactionDto;
+import com.bank_statement_reader.dkb.entity.Transaction;
+import com.bank_statement_reader.dkb.repository.TransactionRepository;
 import com.bank_statement_reader.dkb.service.CategoryMatcherService;
+import com.bank_statement_reader.dkb.service.TransactionService;
 
 import lombok.AllArgsConstructor;
 
@@ -35,6 +38,10 @@ import lombok.AllArgsConstructor;
 public class UploadController {
 
     private CategoryMatcherService categoryMatcherService;
+
+    private TransactionRepository transactionRepository;
+
+    private TransactionService transactionService;
 
     private static final String FILEPATH_STRING = System.getProperty("java.io.tmpdir");
 
@@ -78,17 +85,26 @@ public class UploadController {
                         .setTrim(true)
                         .build())) {
 
-            List<TransactionDto> transactionDtos = new ArrayList<>();
+            List<Transaction> transactions = new ArrayList<>();
             int index = 0;
             for (CSVRecord record : csvParser) {
                 if (index > 6) {
-                    transactionDtos.add(createTransactionDto(record.toList()));
+                    transactions.add(createTransactionDto(record.toList()));
                 }
                 index++;
             }
-            transactionDtos.removeIf(t -> t.getAmount() == null);
-
-            fileResponseDto.setTransactions(transactionDtos);
+            transactions.removeIf(t -> t.getAmount() == null);
+            transactions.forEach(t -> {
+                Transaction isDuplicate = transactionRepository.findByOriginalValue(t.getOriginalValue());
+                if (isDuplicate == null) {
+                    Transaction transaction = transactionRepository.save(t);
+                    TransactionDto transactionDto = transactionService.convertToDto(transaction);
+                    fileResponseDto.transactions.add(transactionDto);
+                } else {
+                    System.out.println(
+                            "Duplicated Transaction =========================> Skipping");
+                }
+            });
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,7 +112,7 @@ public class UploadController {
                     new FileResponseDto("Failed to process file: " + e.getMessage(), new ArrayList<>()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
+        transactionService.findAllTransactions().forEach(t -> fileResponseDto.transactions.add(t));
         return new ResponseEntity<FileResponseDto>(fileResponseDto, HttpStatus.OK);
     }
 
@@ -115,62 +131,68 @@ public class UploadController {
         return filePath;
     }
 
-    private TransactionDto createTransactionDto(List<String> row) throws ParseException {
+    private Transaction createTransactionDto(List<String> row) throws ParseException {
         NumberFormat format = NumberFormat.getInstance(Locale.GERMANY);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
-        TransactionDto transactionDto = new TransactionDto();
+        Transaction transaction = new Transaction();
         int index = 0;
         for (String cell : row) {
             if (columns.contains(cell)) {
                 continue;
             }
+            if (transaction.getOriginalValue() == null) {
+                transaction.setOriginalValue(cell);
+            } else {
+                transaction.setOriginalValue(transaction.getOriginalValue().concat(cell));
+
+            }
             switch (index) {
                 case 0:
-                    transactionDto.setBookingDate(cell);
+                    transaction.setBookingDate(cell);
                     LocalDate localDate = LocalDate.parse(cell, formatter);
-                    transactionDto.setDay(localDate.getDayOfMonth());
-                    transactionDto.setMonth(localDate.getMonthValue());
-                    transactionDto.setYear(localDate.getYear());
+                    transaction.setDay(localDate.getDayOfMonth());
+                    transaction.setMonth(localDate.getMonthValue());
+                    transaction.setYear(localDate.getYear());
                     break;
                 case 1:
-                    transactionDto.setValueDate(cell);
+                    transaction.setValueDate(cell);
                     break;
                 case 2:
-                    transactionDto.setStatus(cell);
+                    transaction.setStatus(cell);
                     break;
                 case 3:
-                    transactionDto.setPayer(cell);
+                    transaction.setPayer(cell);
                     break;
                 case 4:
                     String category = categoryMatcherService.getCategory(cell);
-                    transactionDto.setCategory(category);
-                    transactionDto.setDescription(cell);
+                    transaction.setCategory(category);
+                    transaction.setDescription(cell);
                     break;
                 case 5:
-                    transactionDto.setPurpose(cell);
+                    transaction.setPurpose(cell);
                     break;
                 case 6:
-                    transactionDto.setType(cell);
+                    transaction.setType(cell);
                     break;
                 case 7:
-                    transactionDto.setIban(cell);
+                    transaction.setIban(cell);
                     break;
                 case 8:
-                    transactionDto.setAmount(format.parse(cell).doubleValue());
+                    transaction.setAmount(format.parse(cell).doubleValue());
                     break;
                 case 9:
-                    transactionDto.setCreditorId(cell);
+                    transaction.setCreditorId(cell);
                     break;
                 case 10:
-                    transactionDto.setMandateReference(cell);
+                    transaction.setMandateReference(cell);
                     break;
                 case 11:
-                    transactionDto.setCustomerReference(cell);
+                    transaction.setCustomerReference(cell);
                     break;
             }
             index++;
         }
-        return transactionDto;
+        return transaction;
     }
 
 }

@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TransactionDto {
 
+    private Long id;
+    private String originalValue;
     private String bookingDate;
     private String valueDate;
     private String status;
