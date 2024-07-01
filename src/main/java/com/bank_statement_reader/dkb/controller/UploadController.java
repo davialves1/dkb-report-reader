@@ -64,6 +64,12 @@ public class UploadController {
         return "Hello World";
     }
 
+    @GetMapping("api/all-data")
+    public ResponseEntity<List<TransactionDto>> getAllData() {
+        List<TransactionDto> transactionDtos = transactionService.findAllTransactions();
+        return new ResponseEntity<>(transactionDtos, HttpStatus.OK);
+    }
+
     @PostMapping("/api/upload")
     public ResponseEntity<FileResponseDto> upload(@RequestParam MultipartFile file) throws Exception {
         String fileName = file.getOriginalFilename();
@@ -101,8 +107,8 @@ public class UploadController {
                     TransactionDto transactionDto = transactionService.convertToDto(transaction);
                     fileResponseDto.transactions.add(transactionDto);
                 } else {
-                    System.out.println(
-                            "Duplicated Transaction =========================> Skipping");
+                    System.out.println("\u001B[32m" + "Duplicated Transaction");
+                    System.out.println("=========================> Skipping: " + t.getDescription() + "\u001B[0m");
                 }
             });
 
@@ -143,7 +149,7 @@ public class UploadController {
             if (transaction.getOriginalValue() == null) {
                 transaction.setOriginalValue(cell);
             } else {
-                transaction.setOriginalValue(transaction.getOriginalValue().concat(cell));
+                transaction.setOriginalValue(transaction.getOriginalValue().concat("," + cell));
 
             }
             switch (index) {
