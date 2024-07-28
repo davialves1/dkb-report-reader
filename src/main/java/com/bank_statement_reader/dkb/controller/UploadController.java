@@ -31,17 +31,17 @@ import com.bank_statement_reader.dkb.repository.TransactionRepository;
 import com.bank_statement_reader.dkb.service.CategoryMatcherService;
 import com.bank_statement_reader.dkb.service.TransactionService;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UploadController {
 
-    private CategoryMatcherService categoryMatcherService;
+    private final CategoryMatcherService categoryMatcherService;
 
-    private TransactionRepository transactionRepository;
+    private final TransactionRepository transactionRepository;
 
-    private TransactionService transactionService;
+    private final TransactionService transactionService;
 
     private static final String FILEPATH_STRING = System.getProperty("java.io.tmpdir");
 
@@ -154,8 +154,8 @@ public class UploadController {
             }
             switch (index) {
                 case 0:
-                    transaction.setBookingDate(cell);
                     LocalDate localDate = LocalDate.parse(cell, formatter);
+                    transaction.setBookingDate(localDate);
                     transaction.setDay(localDate.getDayOfMonth());
                     transaction.setMonth(localDate.getMonthValue());
                     transaction.setYear(localDate.getYear());

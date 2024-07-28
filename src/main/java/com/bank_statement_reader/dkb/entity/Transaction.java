@@ -1,5 +1,7 @@
 package com.bank_statement_reader.dkb.entity;
 
+import java.time.LocalDate;
+
 import org.hibernate.annotations.NaturalId;
 
 import jakarta.persistence.Column;
@@ -27,7 +29,7 @@ public class Transaction {
     private String originalValue;
     @Column(length = 1000)
     private String description;
-    private String bookingDate;
+    private LocalDate bookingDate;
     private String valueDate;
     private String status;
     private String payer;
