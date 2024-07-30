@@ -10,7 +10,16 @@ public enum CategoryEnum {
     MISCELLANEOUS("Miscellaneous"),
     CAR("Car"),
     HOUSE("House"),
-    RESTAURANT("Restaurant");
+    SHOPPING("Shopping"),
+    DELIVERY("Delivery"),
+    BAKERY("Bakery"),
+    RESTAURANT("Restaurant"),
+    EDUCATION("Education"),
+    WITHDRAW("Withdraw"),
+    SALARY("Salary"),
+    PERSONAL("Personal"),
+    INTERNET("Internet"),
+    LEISURE("Leisure");
 
     private final String value;
 

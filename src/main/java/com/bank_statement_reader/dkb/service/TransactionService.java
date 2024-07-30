@@ -28,7 +28,20 @@ public class TransactionService {
 
     public List<TransactionDto> getLast30Days() {
         LocalDate last30Days = LocalDate.now().minusDays(30);
-        return transactionRepository.findTransactionsFromLast30Days(last30Days).stream().map(t -> convertToDto(t))
+        return transactionRepository
+                .findTransactionsFrom(last30Days)
+                .stream()
+                .map(t -> convertToDto(t))
+                .toList();
+    }
+
+    public List<TransactionDto> getPrevious(int days) {
+        LocalDate previousDays = LocalDate.now().minusDays(days);
+        return transactionRepository
+                .findTransactionsFrom(
+                        previousDays)
+                .stream()
+                .map(t -> convertToDto(t))
                 .toList();
     }
 }
