@@ -26,7 +26,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bank_statement_reader.dkb.dto.FileResponseDto;
 import com.bank_statement_reader.dkb.dto.TransactionDto;
+import com.bank_statement_reader.dkb.entity.Balance;
 import com.bank_statement_reader.dkb.entity.Transaction;
+import com.bank_statement_reader.dkb.repository.BalanceRepository;
 import com.bank_statement_reader.dkb.repository.TransactionRepository;
 import com.bank_statement_reader.dkb.service.CategoryMatcherService;
 import com.bank_statement_reader.dkb.service.TransactionService;
@@ -40,6 +42,8 @@ public class UploadController {
     private final CategoryMatcherService categoryMatcherService;
 
     private final TransactionRepository transactionRepository;
+
+    private final BalanceRepository balanceRepository;
 
     private final TransactionService transactionService;
 
@@ -70,6 +74,12 @@ public class UploadController {
         return new ResponseEntity<>(transactionDtos, HttpStatus.OK);
     }
 
+    @GetMapping("api/balance")
+    public ResponseEntity<Balance> getBalance() {
+        Balance balance = balanceRepository.findFirstByOrderByUpdateDesc();
+        return new ResponseEntity<>(balance, HttpStatus.OK);
+    }
+
     @PostMapping("/api/upload")
     public ResponseEntity<FileResponseDto> upload(@RequestParam MultipartFile file) throws Exception {
         String fileName = file.getOriginalFilename();
@@ -82,8 +92,8 @@ public class UploadController {
 
         try (Reader reader = Files.newBufferedReader(filePath);
                 CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.builder()
-                        .setDelimiter(';') // Assuming semicolon delimiter
-                        .setQuote('"') // Assuming double quotes as encapsulation
+                        .setDelimiter(';') // Semicolon delimiter
+                        .setQuote('"') // Double quotes as encapsulation
                         .setHeader()
                         .setSkipHeaderRecord(true)
                         .setIgnoreSurroundingSpaces(true)
@@ -94,6 +104,19 @@ public class UploadController {
             List<Transaction> transactions = new ArrayList<>();
             int index = 0;
             for (CSVRecord record : csvParser) {
+                if (index == 1) {
+                    List<String> cellList = record.toList();
+                    String stringDate = cellList.get(0).replace("Kontostand vom ", "").replace(":", "");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                    LocalDate localDate = LocalDate.parse(stringDate, formatter);
+                    NumberFormat format = NumberFormat.getInstance(Locale.GERMANY);
+                    Float balanceNumber = format.parse(cellList.get(1).replace(" €", "")).floatValue();
+                    Balance balance = new Balance();
+                    balance.setBalance(balanceNumber);
+                    balance.setUpdate(localDate);
+                    System.out.println(balance);
+                    balanceRepository.save(balance);
+                }
                 if (index > 6) {
                     transactions.add(createTransactionDto(record.toList()));
                 }

@@ -30,26 +30,27 @@ public class CategoryMatcherService {
                                         Pattern.CASE_INSENSITIVE),
                                         CategoryEnum.CAR.getValue()),
                         Map.entry(Pattern.compile(
-                                        "(ITALIAN\\.S|ristorante|restaurant|sultana|mutter habenicht|ox u\\.s\\. steakhouse|ristorante vivaldi la serenissima|restaurant tandure|troja|india house|hanayuki sushi restaurant|sakana sushi|brasserie & cocktailbar siebenschlafer|das alte haus|corvin's burger & beer|bollywood chili|entenhaus asia restaurant|al duomo|soshe restaurant & bar|pivbar|ristorante il punto|das pizzawerk|badsha|smira bbq restaurant|l'oliveto ristorante - pizzeria|quang anh|block house braunschweig|restaurant buzbag|salentino pizzeria & bistro|vielharmonie|cafe strupait|schadts brauerei gasthaus|makery|meier's gourmet cafe|nem quan|miner's coffee|wolfs gasthaus|zucker restaurant|braunschweiger parlament)",
+                                        "(ITALIAN\\.S|ristorante|restaurant|sultana|mutter habenicht|ox u\\.s\\. steakhouse|Peter Pane|Nem.Grill|ristorante vivaldi la serenissima|restaurant tandure|troja|india house|hanayuki sushi restaurant|sakana sushi|brasserie & cocktailbar siebenschlafer|das alte haus|corvin's burger & beer|bollywood chili|entenhaus asia restaurant|al duomo|soshe restaurant & bar|pivbar|ristorante il punto|das pizzawerk|badsha|smira bbq restaurant|l'oliveto ristorante - pizzeria|quang anh|block house braunschweig|restaurant buzbag|salentino pizzeria & bistro|vielharmonie|cafe strupait|schadts brauerei gasthaus|makery|meier's gourmet cafe|nem quan|miner's coffee|wolfs gasthaus|zucker restaurant|braunschweiger parlament)",
                                         Pattern.CASE_INSENSITIVE),
                                         CategoryEnum.RESTAURANT.getValue()),
                         Map.entry(Pattern.compile("(bauhaus|Beton2Gold|BS\\/ENERGY|getsafe|TaskRabbit)",
                                         Pattern.CASE_INSENSITIVE),
                                         CategoryEnum.HOUSE.getValue()),
                         Map.entry(
-                                        Pattern.compile("(amazon|dm-drogerie|temu|Weisses.Ross|ROSSMANN|tiger|apotheke)",
+                                        Pattern.compile("(amazon|dm-drogerie|temu|Weisses.Ross|ROSSMANN|tiger|apotheke|H & M|Nespresso|IKEA|zalando|AMZN.Mktp)",
                                                         Pattern.CASE_INSENSITIVE),
                                         CategoryEnum.SHOPPING.getValue()),
-                        Map.entry(Pattern.compile("(Bäckerei|Bäcker|Baeckerei|backWerk|Steinecke)",
+                        Map.entry(Pattern.compile(
+                                        "(Bäckerei|Bäcker|Baeckerei|backWerk|Steinecke|CAFE.AM.PARK|UZR.Cafe.Termoli)",
                                         Pattern.CASE_INSENSITIVE),
                                         CategoryEnum.BAKERY.getValue()),
-                        Map.entry(Pattern.compile("(Lieferando|Lieferservice)", Pattern.CASE_INSENSITIVE),
+                        Map.entry(Pattern.compile("(Lieferando|Lieferservice|Domino's|Wolt)", Pattern.CASE_INSENSITIVE),
                                         CategoryEnum.DELIVERY.getValue()),
                         Map.entry(Pattern.compile("(Fachbereich Kinder|Krippe|Kristina Paulsen)",
                                         Pattern.CASE_INSENSITIVE),
                                         CategoryEnum.EDUCATION.getValue()),
                         Map.entry(
-                                        Pattern.compile("(Centerparcs|Center Parcs|ECP - Deutschland|Autostadt)",
+                                        Pattern.compile("(Centerparcs|Center Parcs|ECP - Deutschland|Autostadt|Arche.Noah.Zoo)",
                                                         Pattern.CASE_INSENSITIVE),
                                         CategoryEnum.LEISURE.getValue()),
                         Map.entry(Pattern.compile("(Kamilla Alvarenga Gomes Soutto|Family DKB)",
@@ -59,7 +60,10 @@ public class CategoryMatcherService {
                                         CategoryEnum.PERSONAL.getValue()),
                         Map.entry(Pattern.compile("(Vodafone|Telefonica)", Pattern.CASE_INSENSITIVE),
                                         CategoryEnum.INTERNET.getValue()),
-                        Map.entry(Pattern.compile("(32/ARAL\\.BRAUNSC)", Pattern.CASE_INSENSITIVE),
+                        Map.entry(Pattern.compile("(Disney+|Netflix)", Pattern.CASE_INSENSITIVE),
+                                        CategoryEnum.SUBSCRIPTION.getValue()),
+                        Map.entry(Pattern.compile("(32/ARAL\\.BRAUNSC|Hildesheimer.Str..32/ARAL.BRAUNSC)",
+                                        Pattern.CASE_INSENSITIVE),
                                         CategoryEnum.WITHDRAW.getValue()));
 
         public String getCategory(String description) {

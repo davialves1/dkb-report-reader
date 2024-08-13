@@ -19,7 +19,8 @@ public enum CategoryEnum {
     SALARY("Salary"),
     PERSONAL("Personal"),
     INTERNET("Internet"),
-    LEISURE("Leisure");
+    LEISURE("Leisure"),
+    SUBSCRIPTION("Subscription");
 
     private final String value;
 
