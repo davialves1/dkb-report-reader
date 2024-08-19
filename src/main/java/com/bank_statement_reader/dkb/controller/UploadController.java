@@ -63,7 +63,7 @@ public class UploadController {
             "Mandatsreferenz",
             "Kundenreferenz");
 
-    @GetMapping("/")
+    @GetMapping("/api")
     public String hello() {
         return "Hello World";
     }

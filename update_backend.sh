@@ -12,4 +12,4 @@ docker build -t davialves1/bank-analytics:back-end .
 echo "Pushing to Dockerhub"
 docker push davialves1/bank-analytics:back-end
 
-echo -e "${GREEN}Successfully updated frontend image${NC}"
+echo -e "${GREEN}Successfully updated backend image${NC}"
