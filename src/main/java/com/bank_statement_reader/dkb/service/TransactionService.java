@@ -18,6 +18,15 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
 
+    public Transaction updateTransaction(TransactionDto transactionDto) {
+        Transaction transaction = this.convertToEntityTransaction(transactionDto);
+        return transactionRepository.save(transaction);
+    }
+
+    public Transaction convertToEntityTransaction(TransactionDto transactionDto) {
+        return TransactionMapper.mapper.convertToToEntity(transactionDto);
+    }
+
     public TransactionDto convertToDto(Transaction transaction) {
         return TransactionMapper.mapper.convertToDto(transaction);
     }

@@ -11,11 +11,11 @@ public class TransactionDto {
 
     private Long id;
     private String originalValue;
+    private String description;
     private String bookingDate;
     private String valueDate;
     private String status;
     private String payer;
-    private String description;
     private String purpose;
     private String type;
     private String iban;
