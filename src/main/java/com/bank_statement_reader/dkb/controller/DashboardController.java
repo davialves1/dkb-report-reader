@@ -32,10 +32,7 @@ public class DashboardController {
     @GetMapping("/api/dashboard/monthly")
     public ResponseEntity<HashMap<Integer, List<TransactionDto>>> getByMonth() {
         HashMap<Integer, List<TransactionDto>> transactionsByMonth = new HashMap<>();
-        List<TransactionDto> transactionDtos = transactionService.findAllTransactions()
-                .stream()
-                .filter(t -> t.getYear() == LocalDate.now().getYear())
-                .toList();
+        List<TransactionDto> transactionDtos = transactionService.findAllFromCurrentYear();
         for (TransactionDto transactionDto : transactionDtos) {
             Integer month = transactionDto.getMonth();
             List<TransactionDto> accumulated = transactionsByMonth.get(month);

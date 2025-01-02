@@ -1,7 +1,9 @@
 package com.bank_statement_reader.dkb.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -65,11 +67,20 @@ public class UploadController {
 
         Path filePath = saveFileToTempFolder(file);
 
-        try (Reader reader = Files.newBufferedReader(filePath)) {
+        try (BufferedReader reader = Files.newBufferedReader(filePath)) {
+            StringBuilder sanitizedContent = new StringBuilder();
+            String line;
+            while((line = reader.readLine()) != null) {
+                line = line.replace("\u00A0", " ").trim();
+                line = line.replace("\";\"", "\",\"");
+                sanitizedContent.append(line).append("\n");
+            }
+            System.out.println("sanitizedContent");
+            System.out.println(sanitizedContent);
             CSVParser csvParser;
             try {
                 System.out.println("First attempt with comma as delimiter");
-                csvParser = this.parseService.parseCSV(reader, ",");
+                csvParser = this.parseService.parseCSV(new StringReader(sanitizedContent.toString()), ",");
             } catch (Exception e) {
                 System.out.println("Failed first attempt with comma.");
                 System.out.println("Close and reopen the file for the semicolon attempt");

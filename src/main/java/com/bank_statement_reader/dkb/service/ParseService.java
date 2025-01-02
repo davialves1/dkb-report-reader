@@ -136,20 +136,19 @@ public class ParseService {
         List<Transaction> transactions = new ArrayList<>();
         int index = 0;
         for (CSVRecord record : csvParser) {
-            if (index == 1) {
+            if (index == 0) {
                 List<String> cellList = record.toList();
                 String stringDate = cellList.get(0).replace("Kontostand vom ", "").replace(":", "");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
                 LocalDate localDate = LocalDate.parse(stringDate, formatter);
                 NumberFormat format = NumberFormat.getInstance(Locale.GERMANY);
-                Float balanceNumber = format.parse(cellList.get(1).replace(" €", "")).floatValue();
+                Float balanceNumber = format.parse(cellList.get(1).replace("€", "")).floatValue();
                 Balance balance = new Balance();
                 balance.setBalance(balanceNumber);
                 balance.setUpdate(localDate);
-                System.out.println(balance);
                 balanceRepository.save(balance);
             }
-            if (index > 6) {
+            if (index >= 2) {
                 transactions.add(createTransactionDto(record.toList()));
             }
             index++;

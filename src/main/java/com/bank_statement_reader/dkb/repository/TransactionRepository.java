@@ -16,4 +16,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("SELECT t FROM Transaction t WHERE t.bookingDate >= :startDate")
     List<Transaction> findTransactionsFrom(@Param("startDate") LocalDate startDate);
 
+    List<Transaction> findByYear(int year);
 }
