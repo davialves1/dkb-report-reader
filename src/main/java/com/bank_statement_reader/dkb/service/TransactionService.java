@@ -35,6 +35,11 @@ public class TransactionService {
         return transactionRepository.findAll().stream().map(t -> convertToDto(t)).toList();
     }
 
+    public List<TransactionDto> findByYear(int year) {
+        return transactionRepository.findByYear(year).stream().map(t -> convertToDto(t)).toList();
+
+    }
+
     public List<TransactionDto> findAllFromCurrentYear() {
         int currentYear = java.time.Year.now().getValue();
         return transactionRepository.findByYear(currentYear).stream().map(t -> convertToDto(t)).toList();

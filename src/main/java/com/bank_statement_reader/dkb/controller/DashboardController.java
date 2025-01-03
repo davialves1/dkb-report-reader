@@ -1,6 +1,5 @@
 package com.bank_statement_reader.dkb.controller;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,15 +23,16 @@ public class DashboardController {
 
     @GetMapping("/api/dashboard/{days}")
     public ResponseEntity<List<TransactionDto>> getDashboard(
-            @PathVariable(name = "days") String days) {
+            @PathVariable() String days) {
         List<TransactionDto> previous = transactionService.getPrevious(Integer.parseInt(days));
         return new ResponseEntity<>(previous, HttpStatus.OK);
     }
 
-    @GetMapping("/api/dashboard/monthly")
-    public ResponseEntity<HashMap<Integer, List<TransactionDto>>> getByMonth() {
+    @GetMapping("/api/dashboard/monthly/{year}")
+    public ResponseEntity<HashMap<Integer, List<TransactionDto>>> getByMonth(@PathVariable() String year) {
         HashMap<Integer, List<TransactionDto>> transactionsByMonth = new HashMap<>();
-        List<TransactionDto> transactionDtos = transactionService.findAllFromCurrentYear();
+        List<TransactionDto> transactionDtos = year.isBlank() ? transactionDtos = transactionService.findAllFromCurrentYear() : transactionService.findByYear(Integer.parseInt(year));
+       
         for (TransactionDto transactionDto : transactionDtos) {
             Integer month = transactionDto.getMonth();
             List<TransactionDto> accumulated = transactionsByMonth.get(month);
