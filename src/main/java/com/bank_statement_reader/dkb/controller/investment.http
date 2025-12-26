@@ -1,0 +1,10 @@
+### Create Investment
+POST http://localhost:8080/api/investment
+Content-Type: application/json
+
+{
+  "amount": "1500.50",
+  "entryDate": "2024-09-15",
+  "medium": "DKB",
+  "type": "SP500"
+}
