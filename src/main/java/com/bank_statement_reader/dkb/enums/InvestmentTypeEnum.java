@@ -7,7 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum InvestmentTypeEnum {
     SP500("S&P 500"),
-    QQQ("QQQ");
+    QQQ("QQQ"),
+    IJH("IJH"),
+    ACWI("ACWI"),
+    FEZ("FEZ");
 
 
     private final String value;

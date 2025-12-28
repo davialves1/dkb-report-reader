@@ -14,5 +14,9 @@ public class InvestmentUpdateDto {
     private String medium;
 
     private String type;
+
+    private String familyMember;
+
+    private String informationType;
     
 }

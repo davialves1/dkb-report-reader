@@ -1,5 +1,7 @@
 package com.bank_statement_reader.dkb.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bank_statement_reader.dkb.dto.InvestmentUpdateDto;
@@ -18,6 +20,10 @@ public class InvestmentService {
     public Investment create(InvestmentUpdateDto dto) {
         Investment entity = InvestmentMapper.INSTANCE.toEntity(dto);
         return this.investmentRepository.save(entity);
+    }
+
+    public List<Investment> getAll() {
+        return this.investmentRepository.findAll();
     }
     
 }

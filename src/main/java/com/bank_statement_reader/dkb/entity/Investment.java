@@ -2,6 +2,7 @@ package com.bank_statement_reader.dkb.entity;
 
 import java.time.LocalDate;
 
+
 import com.bank_statement_reader.dkb.enums.InvestmentMediumEnum;
 import com.bank_statement_reader.dkb.enums.InvestmentTypeEnum;
 
@@ -37,4 +38,5 @@ public class Investment {
     @Enumerated(EnumType.STRING)
     private InvestmentTypeEnum type;
     
+    private String informationType;
 }
